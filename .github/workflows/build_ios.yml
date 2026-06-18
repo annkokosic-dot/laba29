@@ -1,0 +1,45 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        pip install kivy
+        pip install pyinstaller
+    
+    - name: Clone kivy-ios
+      run: |
+        git clone https://github.com/kivy/kivy-ios
+        cd kivy-ios
+        pip install -e .
+    
+    - name: Build iOS toolchain
+      run: |
+        cd kivy-ios
+        toolchain build python3 kivy
+    
+    - name: Create iOS project
+      run: |
+        cd kivy-ios
+        toolchain create Laba29 ${{ github.workspace }}
+    
+    - name: Upload iOS project
+      uses: actions/upload-artifact@v4
+      with:
+        name: Laba29-iOS-Project
+        path: kivy-ios/Laba29-ios/
