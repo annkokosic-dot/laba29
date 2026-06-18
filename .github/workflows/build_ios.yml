@@ -43,9 +43,14 @@ jobs:
       run: |
         cd kivy-ios
         toolchain create Laba29 ${{ github.workspace }}
+        ls -la
+        ls -la Laba29-ios/
     
     - name: Upload iOS project
       uses: actions/upload-artifact@v4
       with:
         name: Laba29-iOS-Project
         path: kivy-ios/Laba29-ios/
+        retention-days: 5
+        if-no-files-found: error
+        compression-level: 6
